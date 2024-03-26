@@ -8,11 +8,16 @@ class SpellChecker:
         self._multiDic = md.MultiDictionary()
         self._view = view
 
-    def handleSentence(self, txtIn, language, modality):
-        txtIn = replaceChars(txtIn.lower())
-
+    def handleSentence(self,e):
+        txtIn = self._view.txt_input.value
+        self._view.txt_out.controls.append(ft.Text(f"FRASE INSERITA: {txtIn}"))
+        self._view.txt_input.value = ""
+        self._view.txt_message2.value = ""
+        self._view.txt_message.value = ""
+        modality = self._view.type_dropdown.value
+        language = self._view.language_dropdown.value
         words = txtIn.split()
-        paroleErrate = " - "
+        paroleErrate = ""
 
         match modality:
             case "Default":
@@ -20,8 +25,11 @@ class SpellChecker:
                 parole = self._multiDic.searchWord(words, language)
                 for parola in parole:
                     if not parola.corretta:
-                        paroleErrate = paroleErrate + str(parola) + " - "
+                        paroleErrate = paroleErrate + str(parola) + ", "
                 t2 = time.time()
+                self._view.txt_out.controls.append(ft.Text(f"PAROLE ERRATE: {paroleErrate}"))
+                self._view.txt_out.controls.append(ft.Text(f"TEMPO DI RICERCA: {t2 - t1}"))
+                self._view.update()
                 return paroleErrate, t2 - t1
 
             case "Linear":
@@ -29,8 +37,11 @@ class SpellChecker:
                 parole = self._multiDic.searchWordLinear(words, language)
                 for parola in parole:
                     if not parola.corretta:
-                        paroleErrate = paroleErrate + str(parola) + " "
+                        paroleErrate = paroleErrate + str(parola) + ", "
                 t2 = time.time()
+                self._view.txt_out.controls.append(ft.Text(f"PAROLE ERRATE: {paroleErrate}"))
+                self._view.txt_out.controls.append(ft.Text(f"TEMPO DI RICERCA: {t2 - t1}"))
+                self._view.update()
                 return paroleErrate, t2 - t1
 
             case "Dichotomic":
@@ -38,12 +49,14 @@ class SpellChecker:
                 parole = self._multiDic.searchWordDichotomic(words, language)
                 for parola in parole:
                     if not parola.corretta:
-                        paroleErrate = paroleErrate + str(parola) + " - "
+                        paroleErrate = paroleErrate + str(parola) + ", "
                 t2 = time.time()
+                self._view.txt_out.controls.append(ft.Text(f"PAROLE ERRATE: {paroleErrate}"))
+                self._view.txt_out.controls.append(ft.Text(f"TEMPO DI RICERCA: {t2 - t1}"))
+                self._view.update()
                 return paroleErrate, t2 - t1
             case _:
                 return None
-
 
     def printMenu(self):
         print("______________________________\n" +
@@ -62,3 +75,5 @@ def replaceChars(text):
     for c in chars:
         text = text.replace(c, "")
     return text
+
+

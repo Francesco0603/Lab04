@@ -1,5 +1,6 @@
 import flet as ft
 
+
 class View(object):
     def __init__(self, page: ft.Page):
         # Page
@@ -28,9 +29,40 @@ class View(object):
 
         # Add your stuff here
 
-        self.page.add([])
+        #Row 1
+        def language_chosen(e):
+            if self.language_dropdown.value in ["italian","english","spanish"]:
+                self.txt_message.value = "lingua selezionata correttamente"
+            else:
+                self.txt_message.value = "lingua non supportata"
+            self.page.update()
+        def typeSearch_chosen(e):
+            if self.type_dropdown.value in ["Default", "Linear", "Dichotomic"]:
+                self.txt_message2.value = "modalità selezionata correttamente"
+            else:
+                self.txt_message2.value = "modalità non supportata"
+            self.page.update()
 
-        self.page.update()
+        self.txt_message = ft.Text("")
+        self.txt_message2 = ft.Text("")
+        self.language_dropdown = ft.Dropdown(width=10000, on_change=language_chosen, options=[
+                ft.dropdown.Option("italian"),
+                ft.dropdown.Option("english"),
+                ft.dropdown.Option("spanish"),
+                ft.dropdown.Option("cirillico"),
+            ])
+        self.type_dropdown = ft.Dropdown(width=350, on_change=typeSearch_chosen, options=[
+            ft.dropdown.Option("Default"),
+            ft.dropdown.Option("Linear"),
+            ft.dropdown.Option("Dichotomic"),
+        ])
+        self.txt_input = ft.TextField(label="Inserisci testo",width=500)
+        self.txt_out = ft.ListView(expand=1, spacing=10, padding=20, auto_scroll=True)
+        btn = ft.ElevatedButton(on_click=self.__controller.handleSentence,text="Spell Check",width=200)
+        Row2= ft.Row([self.type_dropdown, self.txt_message2,self.txt_input,btn])
+        Row3= ft.Row([self.txt_message,self.txt_message2,self.txt_out])
+        self.page.add(self.language_dropdown,Row2,Row3)
+        self.update()
 
     def update(self):
         self.page.update()
